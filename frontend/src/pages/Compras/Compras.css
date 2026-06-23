@@ -1,0 +1,77 @@
+.compras-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ACORDION INTERATIVO NA TABELA ERP */
+.accordion-trigger-row {
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.accordion-trigger-row:hover {
+  background-color: #F8FAFC !important;
+}
+
+.row-expanded {
+  background-color: #F1F5F9 !important;
+  border-left: 3px solid var(--primary);
+}
+
+.accordion-details-row {
+  background-color: #FAFBFD;
+}
+
+.accordion-details-row td {
+  padding: 0 !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.accordion-details-box {
+  padding: 1.25rem 1.5rem 1.25rem 3rem;
+  animation: slideDown 0.15s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.details-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+/* TABELA INTERNA DE PROJETOS */
+.details-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.details-table th {
+  background-color: #F1F5F9 !important;
+  color: var(--text-primary) !important;
+  padding: 0.5rem 0.75rem !important;
+  font-size: 0.8rem !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.details-table td {
+  padding: 0.5rem 0.75rem !important;
+  border-bottom: 1px solid #F1F5F9 !important;
+  color: var(--text-primary) !important;
+}
+
+.details-table tr:last-child td {
+  border-bottom: none !important;
+}

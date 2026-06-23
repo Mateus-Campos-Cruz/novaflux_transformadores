@@ -1,0 +1,164 @@
+.project-detail-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--transition);
+  width: fit-content;
+}
+
+.back-link:hover {
+  color: var(--primary);
+}
+
+.project-header-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.header-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.proj-info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.proj-code-large {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--primary);
+  background-color: #F1F5F9;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.proj-info-block h2 {
+  font-size: 1.6rem;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.proj-desc-large {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.proj-status-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.header-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.action-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* DESTAQUE DE LINHA DE RUPTURA */
+.row-ruptura {
+  background-color: #FFF5F5 !important;
+}
+
+.row-ruptura:hover {
+  background-color: #FFEAE8 !important;
+}
+
+/* CAIXA DE TEXTO DO MODAL DE ERROS */
+.error-text {
+  font-family: monospace;
+  background-color: #FFF5F5;
+  border: 1px solid #FFCDD2;
+  border-radius: 4px;
+  padding: 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* CONFIGURAÇÃO DE IMPRESSÃO */
+.print-only-container {
+  display: none;
+}
+
+@media print {
+  .print-only-container {
+    display: block !important;
+  }
+  .project-detail-container > *:not(.print-only-container) {
+    display: none !important;
+  }
+  .modal-overlay {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .proj-status-block {
+    align-items: flex-start;
+  }
+  
+  .header-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons button {
+    width: 100%;
+  }
+}

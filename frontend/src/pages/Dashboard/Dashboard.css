@@ -1,0 +1,162 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dashboard-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dashboard-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.btn-refresh {
+  font-weight: 600;
+}
+
+.spin {
+  animation: rotation 1s infinite linear;
+}
+
+@keyframes rotation {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(359deg); }
+}
+
+/* WIDGET ICON BACKGROUNDS */
+.bg-steel-blue {
+  background-color: var(--primary);
+}
+
+.bg-charcoal {
+  background-color: var(--secondary);
+}
+
+.bg-ruptura {
+  background-color: var(--error);
+}
+
+.bg-critical {
+  background-color: var(--warning);
+}
+
+/* ESPECÍFICOS DE BORDAS */
+.border-ruptura {
+  border-left: 4px solid var(--error) !important;
+}
+
+.border-critical {
+  border-left: 4px solid var(--warning) !important;
+}
+
+.text-error-msg {
+  color: var(--error);
+  font-weight: 500;
+}
+
+.text-warning-msg {
+  color: #B75300;
+  font-weight: 500;
+}
+
+.stat-helper {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}
+
+/* ANIMAÇÃO PULSAR RUPTURA */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .6; }
+}
+
+/* ESTRUTURA DO PAINEL */
+.card-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.panel-header h3 {
+  font-family: var(--font-headings);
+  font-size: 1.25rem;
+  color: var(--primary);
+}
+
+.panel-body {
+  padding: 1.25rem 1.5rem;
+}
+
+/* ESTILOS DE ELEMENTOS DE TABELA ERP */
+.tech-code {
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--primary);
+}
+
+.tech-number {
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+.text-truncated {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+  border: 1px dashed var(--border-color);
+  border-radius: 4px;
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .dashboard-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btn-refresh {
+    width: 100%;
+  }
+}

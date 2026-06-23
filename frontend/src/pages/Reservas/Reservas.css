@@ -1,0 +1,56 @@
+.reserves-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* SELETOR DE ABAS */
+.tab-header {
+  display: flex;
+  border-bottom: 2px solid var(--border-color);
+  gap: 1rem;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font-headings);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+}
+
+.tab-btn:hover {
+  color: var(--primary);
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+@media (max-width: 768px) {
+  .tab-header {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .tab-btn {
+    width: 100%;
+    border-bottom: none;
+    border-left: 3px solid transparent;
+    padding: 0.5rem 1rem;
+  }
+  
+  .tab-btn.active {
+    border-left-color: var(--primary);
+    background-color: #F1F5F9;
+  }
+}
