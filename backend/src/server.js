@@ -10,6 +10,7 @@ const reservasRoutes = require('./routes/reservas.routes');
 const comprasRoutes = require('./routes/compras.routes');
 const auditoriaRoutes = require('./routes/auditoria.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
+const movimentacoesRoutes = require('./routes/movimentacoes.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -61,6 +62,7 @@ app.use('/api/reservas', reservasRoutes);
 app.use('/api/compras', comprasRoutes);
 app.use('/api/auditoria', auditoriaRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/movimentacoes', movimentacoesRoutes);
 
 // Rota de verificação de status (Health Check)
 app.get('/health', (req, res) => {

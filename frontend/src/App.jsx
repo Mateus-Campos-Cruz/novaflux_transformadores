@@ -10,6 +10,7 @@ import { ProjetoDetalhes } from './pages/Projetos/ProjetoDetalhes';
 import { Reservas } from './pages/Reservas/Reservas';
 import { Compras } from './pages/Compras/Compras';
 import { Auditoria } from './pages/Auditoria/Auditoria';
+import { Movimentacoes } from './pages/Movimentacoes/Movimentacoes';
 
 /**
  * Componente de Proteção de Rotas.
@@ -88,6 +89,12 @@ function App() {
           <Route path="/auditoria" element={
             <ProtectedRoute roles={['administrador']}>
               <Auditoria />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/movimentacoes" element={
+            <ProtectedRoute>
+              <Movimentacoes />
             </ProtectedRoute>
           } />
 

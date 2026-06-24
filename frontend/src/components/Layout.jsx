@@ -11,7 +11,8 @@ import {
   LogOut, 
   Menu, 
   X, 
-  User 
+  User,
+  ArrowLeftRight
 } from 'lucide-react';
 import './Layout.css';
 
@@ -45,6 +46,12 @@ export const Layout = ({ children }) => {
       label: 'Reservas', 
       icon: BookmarkCheck, 
       roles: ['administrador', 'almoxarife', 'engenharia'] // compras não acessa
+    },
+    { 
+      path: '/movimentacoes', 
+      label: 'Movimentações', 
+      icon: ArrowLeftRight, 
+      roles: ['administrador', 'almoxarife', 'engenharia', 'compras'] 
     },
     { 
       path: '/compras', 
