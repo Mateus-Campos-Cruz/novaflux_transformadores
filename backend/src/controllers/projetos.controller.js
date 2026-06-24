@@ -514,8 +514,11 @@ exports.update = async (req, res) => {
   } finally {
     client.release();
   }
+};
+
 // 8. Adicionar item manualmente à lista técnica
 exports.addItem = async (req, res) => {
+
   const { id } = req.params;
   const { material_id, quantidade_necessaria } = req.body;
 
