@@ -37,4 +37,10 @@ router.post('/:id/reservar-lote', authenticateToken, authorizeRoles('administrad
 // Relatório de pendências de ruptura do projeto
 router.get('/:id/pendencias', authenticateToken, projetosController.getPendencies);
 
+// Adicionar item manualmente à lista técnica
+router.post('/:id/lista-materiais', authenticateToken, authorizeRoles('administrador', 'engenharia', 'almoxarife'), projetosController.addItem);
+
+// Remover item da lista técnica
+router.delete('/:id/lista-materiais/:itemId', authenticateToken, authorizeRoles('administrador', 'engenharia', 'almoxarife'), projetosController.removeItem);
+
 module.exports = router;

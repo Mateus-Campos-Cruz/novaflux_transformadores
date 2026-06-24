@@ -514,4 +514,110 @@ exports.update = async (req, res) => {
   } finally {
     client.release();
   }
+// 8. Adicionar item manualmente à lista técnica
+exports.addItem = async (req, res) => {
+  const { id } = req.params;
+  const { material_id, quantidade_necessaria } = req.body;
+
+  if (!material_id || !quantidade_necessaria || parseFloat(quantidade_necessaria) <= 0) {
+    return res.status(400).json({ error: 'Material e quantidade (> 0) são obrigatórios.' });
+  }
+
+  const client = await db.pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Verificar projeto
+    const projRes = await client.query('SELECT status FROM projetos WHERE id = $1 AND ativo = TRUE', [id]);
+    if (projRes.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Projeto não encontrado ou inativo.' });
+    }
+    if (projRes.rows[0].status === 'encerrado') {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: 'Não é possível modificar a lista técnica de um projeto encerrado.' });
+    }
+
+    // Verificar material
+    const matRes = await client.query('SELECT id, codigo FROM materiais WHERE id = $1 AND ativo = TRUE', [material_id]);
+    if (matRes.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Material não encontrado ou inativo.' });
+    }
+
+    // Verificar duplicata na lista deste projeto
+    const dupRes = await client.query(
+      'SELECT id FROM lista_materiais WHERE projeto_id = $1 AND material_id = $2',
+      [id, material_id]
+    );
+    if (dupRes.rows.length > 0) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: `O material '${matRes.rows[0].codigo}' já consta na lista técnica deste projeto. Remova-o antes de adicionar novamente.` });
+    }
+
+    const insertRes = await client.query(
+      `INSERT INTO lista_materiais (projeto_id, material_id, quantidade_necessaria)
+       VALUES ($1, $2, $3)
+       RETURNING id`,
+      [id, material_id, parseFloat(quantidade_necessaria)]
+    );
+
+    await logAudit(req, 'item_adicionado_lista_tecnica', 'lista_materiais', insertRes.rows[0].id,
+      `Material ${matRes.rows[0].codigo} adicionado manualmente à lista técnica do projeto.`);
+    await client.query('COMMIT');
+
+    return res.status(201).json({ message: 'Item adicionado à lista técnica com sucesso.', id: insertRes.rows[0].id });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Erro ao adicionar item:', error);
+    return res.status(500).json({ error: 'Erro ao adicionar item à lista técnica.' });
+  } finally {
+    client.release();
+  }
+};
+
+// 9. Remover item da lista técnica
+exports.removeItem = async (req, res) => {
+  const { id, itemId } = req.params;
+
+  const client = await db.pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Verificar projeto
+    const projRes = await client.query('SELECT status, codigo_projeto FROM projetos WHERE id = $1 AND ativo = TRUE', [id]);
+    if (projRes.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Projeto não encontrado.' });
+    }
+    if (projRes.rows[0].status === 'encerrado') {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: 'Não é possível modificar um projeto encerrado.' });
+    }
+
+    // Verificar item
+    const itemRes = await client.query(
+      'SELECT lm.id, m.codigo FROM lista_materiais lm JOIN materiais m ON lm.material_id = m.id WHERE lm.id = $1 AND lm.projeto_id = $2',
+      [itemId, id]
+    );
+    if (itemRes.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'Item não encontrado na lista técnica deste projeto.' });
+    }
+
+    await client.query('DELETE FROM lista_materiais WHERE id = $1', [itemId]);
+    await logAudit(req, 'item_removido_lista_tecnica', 'lista_materiais', itemId,
+      `Material ${itemRes.rows[0].codigo} removido da lista técnica do projeto ${projRes.rows[0].codigo_projeto}.`);
+    await client.query('COMMIT');
+
+    return res.json({ message: 'Item removido da lista técnica com sucesso.' });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Erro ao remover item:', error);
+    return res.status(500).json({ error: 'Erro ao remover item da lista técnica.' });
+  } finally {
+    client.release();
+  }
 };

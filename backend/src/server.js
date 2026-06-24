@@ -87,7 +87,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`====================================================`);
   console.log(` Servidor NovaFlux Almoxarifado rodando na porta ${PORT}`);
-  console.log(` Origem CORS permitida: ${allowedOrigin}`);
+  console.log(` Origens CORS permitidas: ${allowedOrigins.join(', ')}`);
   console.log(` Ambiente: ${process.env.NODE_ENV || 'development'}`);
   console.log(`====================================================`);
 });

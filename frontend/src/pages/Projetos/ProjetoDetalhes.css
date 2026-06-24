@@ -162,3 +162,323 @@
     width: 100%;
   }
 }
+
+/* ── Botão remover item da BOM ─────────────────────────── */
+.btn-remove-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid #fca5a5;
+  background: #fff;
+  color: #dc2626;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.btn-remove-item:hover:not(:disabled) {
+  background: #dc2626;
+  color: #fff;
+}
+.btn-remove-item:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+/* ── Modal Incluir Produto ─────────────────────────────── */
+.add-item-modal {
+  max-width: 900px !important;
+  width: 95vw;
+}
+
+.add-item-hint {
+  font-size: .875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.add-item-search-row {
+  display: flex;
+  gap: .85rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.add-item-search-field {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  flex: 1;
+  min-width: 160px;
+}
+
+.add-item-search-field.flex-2 { flex: 2; }
+
+.add-item-search-field label {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--text-secondary);
+}
+
+.search-input-wrap {
+  position: relative;
+}
+
+.search-input-wrap .search-icon {
+  position: absolute;
+  left: .65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.search-input-wrap input {
+  width: 100%;
+  height: 38px;
+  padding: 0 .75rem 0 2.15rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: .875rem;
+  background: var(--bg-secondary, #f9fafb);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.search-input-wrap input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(27,58,107,.12);
+  background: #fff;
+}
+
+/* Tabela de resultados */
+.search-results-area {
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  min-height: 160px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.search-results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .845rem;
+}
+
+.search-results-table thead tr {
+  background: var(--bg-secondary, #f1f5f9);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.search-results-table th {
+  padding: .65rem .9rem;
+  text-align: left;
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.search-results-table td {
+  padding: .65rem .9rem;
+  border-bottom: 1px solid var(--border-color, #f1f5f9);
+  vertical-align: middle;
+  color: var(--text-primary);
+}
+
+.search-results-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.search-results-table .row-already-added {
+  opacity: .55;
+  background: #f9fafb;
+}
+
+.group-chip {
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .18rem .45rem;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.btn-sm {
+  padding: .2rem .6rem !important;
+  font-size: .78rem !important;
+  height: auto !important;
+  gap: .25rem !important;
+}
+
+.search-loading,
+.search-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  padding: 2.5rem;
+  color: var(--text-secondary);
+  font-size: .875rem;
+  flex-direction: column;
+}
+
+.spin-sm {
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Card do material selecionado */
+.selected-material-card {
+  background: #f0f7ff;
+  border: 2px solid #93c5fd;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+  margin-bottom: 1.25rem;
+}
+
+.selected-material-info {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+}
+
+.sel-code {
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--primary);
+  background: #dbeafe;
+  padding: .15rem .5rem;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.sel-desc {
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.selected-material-meta {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  font-size: .82rem;
+  color: var(--text-secondary);
+}
+
+.selected-material-meta span {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+}
+
+.selected-material-stock {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-size: .875rem;
+}
+
+.stock-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.stock-value {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #16a34a;
+}
+
+.stock-value.text-error { color: #dc2626; }
+
+.btn-deselect {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  background: none;
+  border: 1px solid #93c5fd;
+  border-radius: 6px;
+  padding: .3rem .7rem;
+  font-size: .8rem;
+  cursor: pointer;
+  color: #1e40af;
+  width: fit-content;
+  transition: background .15s;
+}
+.btn-deselect:hover { background: #dbeafe; }
+
+/* Campo de quantidade */
+.qty-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.qty-group .form-input {
+  padding-right: 3.5rem;
+}
+
+.qty-group .input-warning {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 3px rgba(245,158,11,.15);
+}
+
+.qty-unit {
+  position: absolute;
+  right: .9rem;
+  bottom: .6rem;
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+/* Alerta de estoque insuficiente */
+.stock-warning-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  padding: .75rem 1rem;
+  font-size: .855rem;
+  color: #92400e;
+  margin-top: .25rem;
+}
+
+.stock-warning-alert svg { flex-shrink: 0; margin-top: 1px; color: #d97706; }
+
+/* Panel header com contagem */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
