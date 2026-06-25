@@ -137,7 +137,7 @@ export const api = {
   }),
   delete: (endpoint, body, options = {}) => apiRequest(endpoint, {
     ...options,
-    method: 'POST', // Usando POST para cancelamentos com motivos
+    method: 'DELETE',
     headers: { 'Content-Type': 'application/json', ...options.headers },
     body: body ? JSON.stringify(body) : undefined
   }),
