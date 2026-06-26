@@ -250,25 +250,56 @@ exports.importTechnicalList = async (req, res) => {
         throw new Error('Não é possível modificar a lista técnica de um projeto encerrado.');
       }
 
-      // Validar a existência dos materiais no banco
+      // Validar a existência dos materiais no banco em lote (Batch SELECT)
+      const codigos = itemsToProcess.map(item => item.codigo);
+      const matRes = await client.query(
+        'SELECT id, codigo FROM materiais WHERE codigo = ANY($1) AND ativo = TRUE',
+        [codigos]
+      );
+
+      // Criar mapa de código -> id para busca rápida
+      const materialMap = new Map();
+      matRes.rows.forEach(row => {
+        materialMap.set(row.codigo, row.id);
+      });
+
+      const validationErrors = [];
       for (const item of itemsToProcess) {
-        const matRes = await client.query('SELECT id FROM materiais WHERE codigo = $1 AND ativo = TRUE', [item.codigo]);
-        if (matRes.rows.length === 0) {
-          throw new Error(`Linha ${item.rowNumber}: Material com código '${item.codigo}' não existe ou está desativado.`);
+        const materialId = materialMap.get(item.codigo);
+        if (!materialId) {
+          validationErrors.push(`Linha ${item.rowNumber}: Material com código '${item.codigo}' não existe ou está desativado.`);
+        } else {
+          item.material_id = materialId;
         }
-        item.material_id = matRes.rows[0].id;
+      }
+
+      if (validationErrors.length > 0) {
+        throw new Error(validationErrors.join('\n'));
       }
 
       // Limpar a lista técnica atual do projeto (sobrescrever)
       await client.query('DELETE FROM lista_materiais WHERE projeto_id = $1', [id]);
 
-      // Inserir novos itens
-      for (const item of itemsToProcess) {
-        await client.query(
-          `INSERT INTO lista_materiais (projeto_id, material_id, quantidade_necessaria)
-           VALUES ($1, $2, $3)`,
-          [id, item.material_id, item.quantidade]
-        );
+      // Inserir novos itens em lote (Bulk Insert) em pedaços de 500 itens
+      const chunkSize = 500;
+      for (let i = 0; i < itemsToProcess.length; i += chunkSize) {
+        const chunk = itemsToProcess.slice(i, i + chunkSize);
+        const values = [];
+        const params = [];
+        let index = 1;
+
+        for (const item of chunk) {
+          values.push(`($${index}, $${index + 1}, $${index + 2})`);
+          params.push(id, item.material_id, item.quantidade);
+          index += 3;
+        }
+
+        const bulkInsertQuery = `
+          INSERT INTO lista_materiais (projeto_id, material_id, quantidade_necessaria)
+          VALUES ${values.join(', ')}
+        `;
+
+        await client.query(bulkInsertQuery, params);
       }
 
       await logAudit(req, 'lista_tecnica_importada', 'lista_materiais', id, `Importada lista técnica de ${itemsToProcess.length} itens.`);
@@ -339,8 +370,7 @@ exports.reserveBatch = async (req, res) => {
     `;
 
     const itemsRes = await client.query(itemsQuery, [id]);
-    let reservasCriadas = 0;
-
+    const reservasToInsert = [];
     for (const item of itemsRes.rows) {
       const necessita = item.quantidade_necessaria;
       const reservado = item.quantidade_reservada;
@@ -351,15 +381,37 @@ exports.reserveBatch = async (req, res) => {
       if (pendente > 0 && dispLiq > 0) {
         // Reservar o menor valor entre o que falta e o que tem no estoque líquido
         const qtdReservar = Math.min(pendente, dispLiq);
-
-        await client.query(
-          `INSERT INTO reservas (projeto_id, material_id, quantidade_reservada, status, reservado_por)
-           VALUES ($1, $2, $3, 'ativa', $4)`,
-          [id, item.material_id, qtdReservar, req.user.id]
-        );
-        reservasCriadas++;
+        reservasToInsert.push({
+          material_id: item.material_id,
+          quantidade_reservada: qtdReservar
+        });
       }
     }
+
+    if (reservasToInsert.length > 0) {
+      const chunkSize = 500;
+      for (let i = 0; i < reservasToInsert.length; i += chunkSize) {
+        const chunk = reservasToInsert.slice(i, i + chunkSize);
+        const values = [];
+        const params = [];
+        let index = 1;
+
+        for (const resItem of chunk) {
+          values.push(`($${index}, $${index + 1}, $${index + 2}, 'ativa', $${index + 3})`);
+          params.push(id, resItem.material_id, resItem.quantidade_reservada, req.user.id);
+          index += 4;
+        }
+
+        const bulkReservesQuery = `
+          INSERT INTO reservas (projeto_id, material_id, quantidade_reservada, status, reservado_por)
+          VALUES ${values.join(', ')}
+        `;
+
+        await client.query(bulkReservesQuery, params);
+      }
+    }
+
+    const reservasCriadas = reservasToInsert.length;
 
     if (reservasCriadas > 0) {
       // Mudar status do projeto se necessário (ex: de reserva_ativa para em_producao, ou apenas manter)
