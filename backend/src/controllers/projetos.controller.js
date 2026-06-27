@@ -676,3 +676,37 @@ exports.removeItem = async (req, res) => {
     client.release();
   }
 };
+
+// 10. Obter próximo código sugerido de projeto (Padrão: PROJ-YYYY-N)
+exports.getNextCode = async (req, res) => {
+  try {
+    const currentYear = new Date().getFullYear();
+    const prefix = `PROJ-${currentYear}-`;
+
+    // Buscar códigos de projeto do ano atual ativos ou inativos
+    const query = `
+      SELECT codigo_projeto 
+      FROM projetos 
+      WHERE codigo_projeto LIKE $1
+    `;
+    const { rows } = await db.query(query, [`${prefix}%`]);
+
+    let maxNum = 0;
+    for (const row of rows) {
+      const parts = row.codigo_projeto.split('-');
+      if (parts.length === 3) {
+        const num = parseInt(parts[2], 10);
+        if (!isNaN(num) && num > maxNum) {
+          maxNum = num;
+        }
+      }
+    }
+
+    const nextCode = `${prefix}${maxNum + 1}`;
+    return res.json({ nextCode });
+
+  } catch (error) {
+    console.error('Erro ao gerar próximo código de projeto:', error);
+    return res.status(500).json({ error: 'Erro ao gerar código de projeto.' });
+  }
+};

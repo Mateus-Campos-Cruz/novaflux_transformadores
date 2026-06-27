@@ -21,6 +21,22 @@ export const Projetos = () => {
   const [newStatus, setNewStatus] = useState('planejamento');
   const [createError, setCreateError] = useState('');
 
+  const handleOpenCreateModal = async () => {
+    setCreateError('');
+    setNewNome('');
+    setNewDescricao('');
+    setNewStatus('planejamento');
+    setNewCodigo('Gerando código...');
+    setCreateModalOpen(true);
+    try {
+      const data = await api.get('/projetos/next-code');
+      setNewCodigo(data.nextCode);
+    } catch (err) {
+      setNewCodigo('');
+      setCreateError('Erro ao buscar o próximo código de projeto: ' + err.message);
+    }
+  };
+
   const fetchProjects = async () => {
     setLoading(true);
     setError('');
@@ -89,7 +105,7 @@ export const Projetos = () => {
         <p className="dashboard-subtitle">Acompanhamento de ordens de fabricação e alocação de insumos</p>
         
         {hasRole(['administrador', 'engenharia']) && (
-          <button onClick={() => setCreateModalOpen(true)} className="btn btn-primary">
+          <button onClick={handleOpenCreateModal} className="btn btn-primary">
             <Plus size={16} /> Novo Projeto
           </button>
         )}
@@ -158,9 +174,10 @@ export const Projetos = () => {
                   <input 
                     type="text" 
                     className="form-control" 
-                    placeholder="Ex: PROJ-2026-001" 
+                    placeholder="Gerando código..." 
                     value={newCodigo} 
                     onChange={(e) => setNewCodigo(e.target.value)}
+                    disabled
                     required 
                   />
                 </div>

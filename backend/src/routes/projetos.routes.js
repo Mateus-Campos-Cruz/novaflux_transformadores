@@ -13,6 +13,9 @@ const upload = multer({
 // Listar todos os projetos
 router.get('/', authenticateToken, projetosController.list);
 
+// Obter próximo código sugerido de projeto (automático)
+router.get('/next-code', authenticateToken, projetosController.getNextCode);
+
 // Cadastrar novo projeto
 router.post('/', authenticateToken, authorizeRoles('administrador', 'engenharia'), projetosController.create);
 
