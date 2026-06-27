@@ -214,39 +214,10 @@ export const Materiais = () => {
       fetchMaterials(1);
       setTimeout(() => setImportModalOpen(false), 2000);
     } catch (err) {
-      // Se vierem erros detalhados linha a linha do backend
-      if (err.message.includes('Inconsistências encontradas') || err.message.includes('Importação não realizada')) {
-        // Tentar obter detalhes do erro se o backend passou em json
-        // Nosso apiRequest lança erro com o .error, mas se houver detalhes passamos
-        // No express nós retornamos { error, details: [...] }. Vamos capturar isso.
-        // O helper de API joga a string em erro. Para lidar com isso, podemos buscar direto do erro ou customizar.
-        // Vamos checar se o erro carrega detalhes
-      }
-      // Como o erro lançado pelo api.js é um Error com a string descritiva,
-      // em api.js capturamos o JSON e extraímos. Se o backend mandou detalhes,
-      // nós podemos fazer uma requisição manual para tratar o JSON em api.js ou
-      // de outra forma. No api.js definimos: `let errMsg = errData.error; throw new Error(errMsg);`
-      // Vamos ajustar o api.js depois se necessário, mas por ora, vamos exibir a mensagem no modal.
-      // Para exibir os detalhes linha a linha, vamos fazer a chamada direta do Fetch no import se precisarmos dos detalhes!
-      // Sim, fazer uma chamada Fetch direta aqui no componente nos dá 100% de flexibilidade sobre a resposta JSON (incluindo o array de erros details).
-      const refresh = localStorage.getItem('refreshToken');
-      const token = localStorage.getItem('accessToken');
-      
-      const response = await fetch('http://localhost:5000/api/materiais/import', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      });
-      
-      const result = await response.json();
-      if (!response.ok) {
-        if (result.details && Array.isArray(result.details)) {
-          setImportErrors(result.details);
-        } else {
-          setImportErrors([result.error || 'Erro na importação.']);
-        }
+      if (err.details && Array.isArray(err.details)) {
+        setImportErrors(err.details);
+      } else {
+        setImportErrors([err.message || 'Erro na importação.']);
       }
     } finally {
       setImporting(false);

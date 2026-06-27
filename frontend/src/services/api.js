@@ -111,11 +111,15 @@ export const apiRequest = async (endpoint, options = {}) => {
   // Se a resposta ainda falhar, tenta ler o JSON de erro do backend
   if (!response.ok) {
     let errMsg = 'Erro na comunicação com o servidor.';
+    let errDetails = null;
     try {
       const errData = await response.json();
       errMsg = errData.error || errMsg;
+      errDetails = errData.details || null;
     } catch (_) {}
-    throw new Error(errMsg);
+    const error = new Error(errMsg);
+    error.details = errDetails;
+    throw error;
   }
 
   return response.json();
